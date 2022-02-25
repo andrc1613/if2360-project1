@@ -29,6 +29,12 @@ var drawSquare = function(x, y){
     ]);
     var hex = document.getElementById("color_picker").value
     rgb = hexToRgb(hex)
+    var colorData = [
+        rgb[0]/255, rgb[1]/255, rgb[2]/255,   
+        rgb[0]/255, rgb[1]/255, rgb[2]/255,
+        rgb[0]/255, rgb[1]/255, rgb[2]/255,
+        rgb[0]/255, rgb[1]/255, rgb[2]/255    
+    ];
     const vertexData = [
         -0.5, 0.5, 0.0,
         -0.5, -0.5, 0.0,
@@ -44,7 +50,7 @@ var drawSquare = function(x, y){
     // create color buffer
     var colorBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(rgb), gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colorData), gl.STATIC_DRAW);
 
     //vertex code
     var vertexCode = 

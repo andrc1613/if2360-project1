@@ -81,3 +81,159 @@ var drawObject = function (program, vertices, method, n) {
 	gl.useProgram(program)
     gl.drawArrays(method, 0, n)
 }
+
+var canvas = document.getElementById('canvas-surface')
+var gl = canvas.getContext('webgl')
+
+var load = function() {
+    if (!gl) {
+        console.log('webgl not supported')
+        gl = canvas.getContext('experimental-webgl');
+	}
+
+	if (!gl) {
+		alert('Your browser does not support WebGL');
+	}
+}
+
+var main = function (vertices, n, method) {
+    console.log('Main is working')
+
+    // Create Shaders
+    var vertexShader = createShader(gl.VERTEX_SHADER, vertexShaderText)
+    var fragmentShader = createShader(gl.FRAGMENT_SHADER, fragmentShaderText)
+
+    // Create program
+    var program = createProgram(vertexShader, fragmentShader)
+
+    drawObject(program, vertices, method, n)
+}
+
+var isLine = false
+var isSquare = false
+var isPolygon = false
+
+// Mouse Position
+var x = 0
+var y = 0
+var width = document.getElementById('canvas-surface').width
+var height = document.getElementById('canvas-surface').height
+
+// For Object selected
+var selectedObject
+var idxPoint
+var isDrag = false
+
+// Vertices and color
+var vertices = []
+var points = []
+var rgb = [0.0, 0.0, 0.0]
+
+// Array of Object
+var arrObjects = []
+
+canvas.addEventListener("mousedown", function(e) {
+    x = getXCursorPosition(canvas, e)
+    y = getYCursorPosition(canvas, e)   
+    // console.log('x : '+ x + ' y : ' + y)
+    checkSelectedObject(x, y)
+    render(x, y)
+
+    if (selectedObject != null) {
+        isDrag = true
+        canvas.addEventListener("mouseup", (event) => changeObjectPoint(canvas, event))
+
+        if(!isDrag) {
+            canvas.removeEventListener("mouseup", (event) => changeObjectPoint(canvas, event))
+        }
+    }
+})
+
+var render = function(x, y) {
+    if (isPolygon) {
+        drawPolygon(x, y)
+    } else if (isLine) {
+       drawLine(x, y)
+    } else if (isSquare) {
+        drawSquare(x, y)
+    }
+}
+
+var renderObject = function(vertices, n, method) {
+    main(vertices, n, method)
+    for (var i=0; i<vertices.length; i+=5) {
+        var sq_point = getSquarePoint(vertices[i], vertices[i+1])
+        main(sq_point, 4, gl.TRIANGLE_FAN)
+        points.push(sq_point)
+    }
+    console.log("render object")
+    console.log(points)
+}
+
+var renderAll = function() {
+    for (var i=0; i<arrObjects.length; i++) {
+        main(arrObjects[i].vert, arrObjects[i].n, arrObjects[i].meth)
+        // render square points of object
+        for (var j=0; j<arrObjects[i].n; j++) {
+            main(arrObjects[i].p[j], 4, gl.TRIANGLE_FAN)
+        }
+    }
+}
+
+var getXCursorPosition = function(canvas, event) {
+    const rect = canvas.getBoundingClientRect()
+    const x = event.clientX - rect.left
+    return (x - width/2)/ (width/2);
+}
+
+var getYCursorPosition  = function(canvas, event) {
+    const rect = canvas.getBoundingClientRect()
+    const y = event.clientY - rect.top
+    return (y - height/2)/ (height/2) * -1;
+}
+
+var checkSelectedObject = function(x, y) {
+    selectedObject = null
+    idxPoint = -1
+
+    arrObjects.forEach(function (item) {
+        item.p.forEach(function (item2, idx) {
+            // console.log("item2")
+            // console.log(item2)
+            if (x > item2[0] && y < item2[1] &&
+                x < item2[5] && y < item2[6] &&
+                x < item2[10] && y > item2[11] &&
+                x > item2[15] && y > item2[16]) {
+                selectedObject = item
+                idxPoint = idx
+                console.log("object selected with idx " + idx)
+                }
+        })
+    })
+    // console.log(selectedObject)
+}
+
+var changeObjectPoint = function(canvas, ev) {
+    x = getXCursorPosition(canvas, ev)
+    y = getYCursorPosition(canvas, ev)
+        
+    if (isDrag && selectedObject.type != "square") {
+        // change vertices point
+        selectedObject.vert[idxPoint*5] = x
+        selectedObject.vert[idxPoint*5 + 1] = y
+
+        // change square point
+        selectedObject.p[idxPoint] = getSquarePoint(x, y)
+        renderAll()
+        isDrag = false
+    }
+}
+
+var getSquarePoint = function(x, y) {
+    return [
+        x-0.025, y+0.025, 1.0, 1.0, 1.0,
+        x+0.025, y+0.025, 1.0, 1.0, 1.0,
+        x+0.025, y-0.025, 1.0, 1.0, 1.0,
+        x-0.025, y-0.025, 1.0, 1.0, 1.0
+    ]
+}

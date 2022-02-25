@@ -9,9 +9,9 @@
         <p class="center"><i>Choose your object type and draw it on canvas above</i></p>
         <section class="center">
             <button id="helpBtn">Help</button>
-            <input type="button" id="btn_line" value="Line" onclick="drawLine()">
-            <input type="button" id="btn_square" value="Square" onclick="drawSquare()">
-            <input type="button" id="btn_polygon" value="Polygon" onclick="drawPolygon()">
+            <input type="button" id="btn_line" value="Line" onclick="setLine()">
+            <input type="button" id="btn_square" value="Square" onclick="setSquare()">
+            <input type="button" id="btn_polygon" value="Polygon" onclick="setPolygon()">
             <input type="number" id="n-poly" min="1" onchange="changeNPoly()">
             <input type="color" id="color_picker" onchange="getColor()">
         </section>
@@ -29,10 +29,10 @@
         </section>
 
         <script src="app.js"></script>
+        <script src="util.js"></script>
+        <script src="file_handler.js"></script>
         <script src="polygon.js"></script>
         <!-- <script src="line.js"></script> -->
         <!-- <script src="square.js"></script> -->
-        <script src="util.js"></script>
-        <script src="file_handler.js"></script>
     </body>
 </html>

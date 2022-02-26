@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>WebGL 2D CAD</title>
+        <link rel="stylesheet" href="index.css">
+    </head>
+    <body onload="load()">
+        <h2 class="center">WebGL 2D CAD</h2>
+        <p class="center"><i>Choose your object type and draw it on canvas above</i></p>
+        <section class="center">
+            <button id="helpBtn">Help</button>
+            <input type="button" id="btn_line" value="Line" onclick="setLine()">
+            <input type="button" id="btn_square" value="Square" onclick="setSquare()">
+            <input type="button" id="btn_polygon" value="Polygon" onclick="setPolygon()">
+            <input type="number" id="n-poly" min="1" onchange="changeNPoly()">
+            <input type="color" id="color_picker" onchange="getColor()">
+        </section>
+        <br/>
+        <section class="center">
+            <canvas id="canvas-surface" width="500" height="500">
+            Your browser does not support HTML5
+            </canvas>
+        </section>
+        <section class="center">
+            <input type="text" id="export_file" placeholder="Enter file name">
+            <input type="button" value="Export" onclick="exportFile()">
+            <input type="file" id="import_file" accept=".json">
+            <input type="button" value="Import" onclick="importFile()">
+        </section>
+
+        <script src="app.js"></script>
+        <script src="util.js"></script>
+        <script src="file_handler.js"></script>
+        <script src="polygon.js"></script>
+        <!-- <script src="line.js"></script> -->
+        <!-- <script src="square.js"></script> -->
+    </body>
+</html>

@@ -1,7 +1,12 @@
-var n_poly = 1
+var n_poly = 3
 var n_after = 0
 
 var changeNPoly = function() {
+    if (document.getElementById("n-poly").value < 3) {
+        window.alert("Silakan masukkan nilai minimal 3");
+        document.getElementById("n-poly").value = 3;
+        return;
+    }
     n_poly = document.getElementById("n-poly").value
     console.log("Changed npoly : " + n_poly)
 }

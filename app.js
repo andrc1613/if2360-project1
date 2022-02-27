@@ -55,6 +55,8 @@ var drawObject = function (program, vertices, method, n) {
 	gl.bindBuffer(gl.ARRAY_BUFFER, vertexBufferObject);
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
 
+    
+
 	var positionAttribLocation = gl.getAttribLocation(program, 'vertPosition');
     var colorAttribLocation = gl.getAttribLocation(program, 'vertColor');
     gl.vertexAttribPointer(
@@ -124,6 +126,8 @@ var selectedObject
 var idxPoint
 var isDrag = false
 
+
+
 // Vertices and color
 var vertices = []
 var points = []
@@ -180,6 +184,7 @@ var renderAll = function() {
     }
 }
 
+
 var getXCursorPosition = function(canvas, event) {
     const rect = canvas.getBoundingClientRect()
     const x = event.clientX - rect.left
@@ -207,7 +212,7 @@ var checkSelectedObject = function(x, y) {
                 selectedObject = item
                 idxPoint = idx
                 console.log("object selected with idx " + idx)
-                }
+            }
         })
     })
     // console.log(selectedObject)
@@ -224,6 +229,13 @@ var changeObjectPoint = function(canvas, ev) {
 
         // change square point
         selectedObject.p[idxPoint] = getSquarePoint(x, y)
+        renderAll()
+        isDrag = false
+    }else if(isDrag && selectedObject.type == "square"){
+        selectedObject.vert = fixSquare(selectedObject.vert,idxPoint,x,y)
+        fixPoints(selectedObject.vert)
+        selectedObject.p = points
+        points = []
         renderAll()
         isDrag = false
     }

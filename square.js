@@ -1,16 +1,3 @@
-
-//Translasi ditandai dengan Ti
-//changeable for moving the quad
-var Tx = 0;
-var Ty = 0;
-const Tz = 0;
-
-//Scaling ditandai dengan Si
-//changeable for changing the size
-var Sx = 1;
-var Sy = 1;
-const Sz = 1;
-
 var setSquare = function() {
     isLine = false
     isSquare = true
@@ -19,110 +6,69 @@ var setSquare = function() {
 }
 
 var drawSquare = function(x, y){
-    Tx = x;
-    Ty = y;
-    var xformMatrix = new Float32Array([
-        Sx, 0.0, 0.0, 0.0,
-        0.0, Sy, 0.0, 0.0,
-        0.0, 0.0, Sz, 0.0,
-        0.0, 0.0, 0.0, 1.0
-    ]);
-    var hex = document.getElementById("color_picker").value
-    rgb = hexToRgb(hex)
-    var colorData = [
-        rgb[0]/255, rgb[1]/255, rgb[2]/255,   
-        rgb[0]/255, rgb[1]/255, rgb[2]/255,
-        rgb[0]/255, rgb[1]/255, rgb[2]/255,
-        rgb[0]/255, rgb[1]/255, rgb[2]/255    
-    ];
-    const vertexData = [
-        -0.5, 0.5, 0.0,
-        -0.5, -0.5, 0.0,
-        0.5, -0.5, 0.0,
-        0.5, 0.5, 0.0
-    ];
-    // create position buffer
-    var positionBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexData), gl.STATIC_DRAW);
-    gl.bindBuffer(gl.ARRAY_BUFFER, null);
+    vertices = getSquare(x,y)
+    console.log("vertices" + vertices)
+    const titik = 4
+    renderObject(vertices, titik, gl.TRIANGLE_FAN) 
+    arrObjects.push({
+        vert: vertices,
+        meth: gl.TRIANGLE_FAN,
+        n: 4,
+        p: points,
+        type: "square"
+    })
+    console.log(arrObjects)
+    vertices = []
+    points = []
+    isSquare = false
+    renderAll()
+}
 
-    // create color buffer
-    var colorBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colorData), gl.STATIC_DRAW);
-
-    //vertex code
-    var vertexCode = 
-    `precision mediump float;
-
-    attribute vec4 position;
-    uniform mat4 u_xformMatrix;
-    uniform vec4 translation;
-    attribute vec3 color;
-    varying vec3 vColor;
-    void main() {
-        vColor = color;
-        gl_Position = (u_xformMatrix * position) + translation;
-    }`;
-
-    // create vertex shader
-    const vertexShader = gl.createShader(gl.VERTEX_SHADER);
-    gl.shaderSource(vertexShader, vertexCode);
-    gl.compileShader(vertexShader);
-
-    //fragment code
-    var fragCode =
-    `precision mediump float;
-
-    varying vec3 vColor;
-    void main() {
-        gl_FragColor = vec4(vColor, 1);
-    }`;
-    // create fragment shader
-    var fragmentShader =gl.createShader(gl.FRAGMENT_SHADER);
-    gl.shaderSource(fragmentShader,fragCode);
-    gl.compileShader(fragmentShader);
-
-    // create Program
-    var program =gl.createProgram();
-    // attach shader to program
-    gl.attachShader(program, vertexShader);
-    gl.attachShader(program, fragmentShader);
-    gl.linkProgram(program);
-
-    gl.useProgram(program);
-
-    //scaling
-    var u_xformMatrix = gl.getUniformLocation(program, 'u_xformMatrix');
-    gl.uniformMatrix4fv(u_xformMatrix, false, xformMatrix);
-
-    // enable vertex atribut
-    var positionLocation = gl.getAttribLocation(program, `position`);
-    gl.enableVertexAttribArray(positionLocation);
-    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-    gl.vertexAttribPointer(positionLocation, 3, gl.FLOAT, false, 0, 0);
-
-    var colorLocation = gl.getAttribLocation(program, `color`);
-    gl.enableVertexAttribArray(colorLocation);
-    gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-    gl.vertexAttribPointer(colorLocation, 3, gl.FLOAT, false, 0, 0);
-
-    //Translation
-    var translation = gl.getUniformLocation(program, 'translation');
-    gl.uniform4f(translation, Tx, Ty, Tz, 0.0);
-
-    // draw
-    gl.clearColor(0.5, 0.5, 0.5, 0.9);
-    gl.enable(gl.DEPTH_TEST);
-
-    gl.clear(gl.COLOR_BUFFER_BIT);
-    gl.viewport(0,0,canvas.width,canvas.height);
-    gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+var getSquare = function(x, y) {
+    return [
+        x-1/2, y+1/2, rgb[0]/255, rgb[1]/255, rgb[2]/255,
+        x+1/2, y+1/2, rgb[0]/255, rgb[1]/255, rgb[2]/255,
+        x+1/2, y-1/2, rgb[0]/255, rgb[1]/255, rgb[2]/255,
+        x-1/2, y-1/2, rgb[0]/255, rgb[1]/255, rgb[2]/255
+    ]
 }
 
 var changeScaleX = function(){
     Sx = document.getElementById("scale-x").value
+}
+
+var fixSquare = function (vertice , idx, x, y){
+    vertice[idx * 5] = x
+    vertice[idx * 5 + 1] = y 
+    if (idx == 0){
+        vertice[5] = vertice[10]
+        vertice[6] = y
+        vertice[15] = x
+        vertice[16] = vertice[11]
+    }else if (idx == 1){
+        vertice[0] = vertice [15]
+        vertice[1] = y
+        vertice[10] = x
+        vertice[11] = vertice[16]
+    }else if(idx == 2){
+        vertice[5] = x
+        vertice[6] = vertice[1]
+        vertice[15] = vertice[0]
+        vertice[16] = y
+    }else{
+        vertice[0] = x
+        vertice[1] = vertice[6]
+        vertice[10] = vertice[5]
+        vertice[11] = y
+    }
+    return vertice
+}
+
+var fixPoints = function(vertice){
+    for (var i=0; i<vertice.length; i+=5) {
+        var sq_point = getSquarePoint(vertice[i], vertice[i+1])
+        points.push(sq_point)
+    }
 }
 
 var changeScaleY = function(){

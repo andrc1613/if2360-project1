@@ -40,5 +40,9 @@ var help = function() {
         Petunjuk (Polygon):
         1. Sebelum menekan tombol Polygon, tentukan jumlah titik yang akan dibuat (minimal 3).
         2. Tekan titik pada posisi yang diinginkan sebanyak nilai yang sudah ditentukan.
+
+        Petunjuk (File Handling):
+        1. Untuk meng-export canvas menjadi sebuah file external, tentukan terlebih dahulu nama file yang ingin di-export, kemudian tekan tombol Export.
+        2. Untuk meng-import file yang sudah ada, pilih file yang ingin di-import, kemudian tekan tombol Import.
         `)
 }

@@ -27,17 +27,18 @@ var help = function() {
         1. Tentukan warna yang ingin digunakan.
         2. Ikuti petunjuk setiap bentuknya.
         3. Untuk mengubah posisi titik, drag titik tersebut ke posisi yang diinginkan.
+        4. Untuk mengubah warna, tekan salah satu titik pada bentuk yang ingin diubah warnanya, kemudian ubah warnanya sesuai dengan keinginan.
 
         Petunjuk (Line):
         1. Tekan 2 titik pada posisi yang diinginkan. Kedua titik akan terhubung menjadi sebuah garis.
 
         Petunjuk (Square):
-        1. Sebelum menekan tombol Square, tentukan panjang dan lebar dalam interval [0.5, 5].
-        2. Tekan titik tengah dari persegi/persegi panjang yang akan dibangun.
-        3. Untuk mengubah panjang garis, ubah nilai panjang dan/atau lebar dalam interval yang sama.
+        1. Tekan salah satu titik yang diinginkan (disarankan ditengah canvas).
+        2. Titik tersebut akan menjadi titik tengah dari sebuah persegi inisiasi.
+        3. Untuk mengubah ukuran persegi atau membuat persegi panjang, drag salah satu titik pada posisi yang diinginkan.
 
         Petunjuk (Polygon):
         1. Sebelum menekan tombol Polygon, tentukan jumlah titik yang akan dibuat (minimal 3).
-        2. Tekan titik pada posisi yang diinginkan sejumlah nilai yang sudah ditentukan.
+        2. Tekan titik pada posisi yang diinginkan sebanyak nilai yang sudah ditentukan.
         `)
 }
